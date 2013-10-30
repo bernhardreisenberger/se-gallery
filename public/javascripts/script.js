@@ -15,7 +15,8 @@ $(document).ready(function () {
     });
     //trigger ajax request only if there is a filter in the url
     if (filter != '') {
-        $.get(filter, function (data) {
+        $.ajax({ url: filter, type: 'GET', async: true, timeout: 5000 })
+        .done(function (data) {
             console.log(data);
             //add html for each image
             $.each(data, function (i, val) {
