@@ -43,7 +43,7 @@ exports.filter = function (req, res) {
 
 // upload new files to tag directory
 exports.upload = function (req, res) {
-    var imagePath = "./public/uploads/";
+    var imagePath = "./public/uploads";
 
     if (req.files.image.name != '') {
         //if only one tag will be submitted, we get a string...we do need an array
@@ -60,11 +60,11 @@ exports.upload = function (req, res) {
         if (!fs.existsSync(imagePath)) {
             fs.mkdirSync(imagePath);
         }
-        //write file to server and redirect to homepage
+        //write file to server and redirect to uploaded files
         fs.readFile(req.files.image.path, function (err, data) {
             var file = imagePath + "/" + req.files.image.name;
             fs.writeFile(file, data, function (err) {
-                res.redirect("/");
+                res.redirect("/" + req.body.tags.toString().replace(',',' '));
             });
         });
         console.log("uploaded file " + req.files.image.name);
