@@ -1,0 +1,87 @@
+<html>
+<head>
+    <title>iisnode logs</title>
+    <style type="text/css">
+        body
+        {
+            font-family: "Trebuchet MS" , Arial, Helvetica, sans-serif;
+        }
+        table
+        {
+            border-collapse: collapse;
+        }
+        td, th
+        {
+            border: 1px solid lightgray;
+            padding: 3px 7px 2px 7px;
+        }
+        th
+        {
+            text-align: left;
+            padding-top: 5px;
+            padding-bottom: 4px;
+            background-color: Gray;
+            color: #ffffff;
+        }
+        td.stderr
+        {
+            color: Red;
+        }
+    </style>
+</head>
+<body>
+    <table id="logFilesTable">
+        <tr>
+            <th>
+                Computer name
+            </th>
+            <th>
+                PID
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Created
+            </th>
+            <th>
+                Link
+            </th>
+        </tr>
+    </table>
+    <p id="lastUpdated"></p>
+    <script type="text/javascript">
+
+        // this is replaced with actual data at runtime by code in interceptor.js
+        var logFiles = [{"file":"KHORINIS-1888-stdout-1383096182229.txt","computername":"KHORINIS","pid":1888,"type":"stdout","created":1383096182229},{"file":"KHORINIS-2260-stderr-1383091137860.txt","computername":"KHORINIS","pid":2260,"type":"stderr","created":1383091137860},{"file":"KHORINIS-2260-stdout-1383091137857.txt","computername":"KHORINIS","pid":2260,"type":"stdout","created":1383091137857},{"file":"KHORINIS-2264-stderr-1383090322262.txt","computername":"KHORINIS","pid":2264,"type":"stderr","created":1383090322262},{"file":"KHORINIS-2264-stdout-1383090322259.txt","computername":"KHORINIS","pid":2264,"type":"stdout","created":1383090322259},{"file":"KHORINIS-3352-stderr-1383090325391.txt","computername":"KHORINIS","pid":3352,"type":"stderr","created":1383090325391},{"file":"KHORINIS-3352-stdout-1383090325387.txt","computername":"KHORINIS","pid":3352,"type":"stdout","created":1383090325387},{"file":"KHORINIS-384-stdout-1383090265713.txt","computername":"KHORINIS","pid":384,"type":"stdout","created":1383090265713},{"file":"KHORINIS-4172-stdout-1383090390536.txt","computername":"KHORINIS","pid":4172,"type":"stdout","created":1383090390536},{"file":"KHORINIS-5052-stdout-1383090253607.txt","computername":"KHORINIS","pid":5052,"type":"stdout","created":1383090253607},{"file":"KHORINIS-616-stdout-1383090212784.txt","computername":"KHORINIS","pid":616,"type":"stdout","created":1383090212784},{"file":"KHORINIS-6476-stdout-1383090224002.txt","computername":"KHORINIS","pid":6476,"type":"stdout","created":1383090224002},{"file":"KHORINIS-6736-stderr-1383091127243.txt","computername":"KHORINIS","pid":6736,"type":"stderr","created":1383091127243},{"file":"KHORINIS-6736-stdout-1383091127240.txt","computername":"KHORINIS","pid":6736,"type":"stdout","created":1383091127240},{"file":"KHORINIS-6896-stdout-1383090351913.txt","computername":"KHORINIS","pid":6896,"type":"stdout","created":1383090351913},{"file":"KHORINIS-736-stderr-1383090344610.txt","computername":"KHORINIS","pid":736,"type":"stderr","created":1383090344610},{"file":"KHORINIS-736-stdout-1383090344606.txt","computername":"KHORINIS","pid":736,"type":"stdout","created":1383090344606},{"file":"KHORINIS-7428-stdout-1383091106685.txt","computername":"KHORINIS","pid":7428,"type":"stdout","created":1383091106685},{"file":"KHORINIS-7912-stdout-1383090515783.txt","computername":"KHORINIS","pid":7912,"type":"stdout","created":1383090515783},{"file":"KHORINIS-8692-stdout-1383092196671.txt","computername":"KHORINIS","pid":8692,"type":"stdout","created":1383092196671},{"file":"KHORINIS-9188-stdout-1383091080029.txt","computername":"KHORINIS","pid":9188,"type":"stdout","created":1383091080029}];
+        var lastUpdated = 1383096182386;
+        var date = new Date();
+
+        date.setTime(lastUpdated);
+        document.getElementById('lastUpdated').innerHTML = 'Index was last updated ' + date;
+
+        logFiles.sort(function (a, b) {
+            return b.created - a.created;
+        });
+
+        var logFilesTable = document.getElementById("logFilesTable");
+        for (var i = 0; i < logFiles.length; i++) {
+            var logFile = logFiles[i];
+            date.setTime(logFile.created);
+            var row = logFilesTable.insertRow(-1);
+            var computerNameCell = row.insertCell(0);
+            var pidCell = row.insertCell(1);
+            var typeCell = row.insertCell(2);
+            var dateCell = row.insertCell(3);
+            var logCell = row.insertCell(4);
+            computerNameCell.innerHTML = logFile.computername;
+            pidCell.innerHTML = logFile.pid.toString();
+            typeCell.innerHTML = logFile.type;
+            typeCell.setAttribute('class', logFile.type);
+            dateCell.innerHTML = date.toString();
+            logCell.innerHTML = '<a href="' + logFile.file + '">log</a>';
+        };
+
+    </script>
+</body>
+</html>

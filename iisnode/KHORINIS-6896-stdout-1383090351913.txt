@@ -1,0 +1,5 @@
+Express server listening on port \\.\pipe\2152e3b0-0bac-4326-a201-bfcade559ad5
+[90mGET /nice [32m200 [90m26ms - 355[0m
+this is ajax
+[ '0Dwu4.gif' ]
+[90mGET /nice [32m200 [90m146ms - 17[0m

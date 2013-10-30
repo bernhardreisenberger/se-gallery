@@ -1,0 +1,3 @@
+Express server listening on port \\.\pipe\1ba028ce-0d32-4c54-9e2c-ab4c10e8fbae
+[90mGET /reddit [32m200 [90m61ms - 357[0m
+this is ajax

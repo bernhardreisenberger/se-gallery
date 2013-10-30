@@ -1,0 +1,9 @@
+Express server listening on port \\.\pipe\7b00e4b5-5865-4096-89ce-68ad064a9162
+[90mGET /bla [32m200 [90m53ms - 354[0m
+this is ajax
+[]
+[90mGET /bla [32m200 [90m133ms - 2[0m
+[90mGET /bla [32m200 [90m6ms - 354[0m
+this is ajax
+[]
+[90mGET /bla [32m200 [90m132ms - 2[0m

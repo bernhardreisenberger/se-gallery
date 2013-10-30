@@ -1,0 +1,21 @@
+Express server listening on port \\.\pipe\95d8a2f1-5af6-4a81-ac8b-aafdf15cc50a
+[90mGET /nice [32m200 [90m27ms - 355[0m
+this is ajax
+[ '0Dwu4.gif' ]
+[90mGET /nice [32m200 [90m129ms - 17[0m
+[90mGET /nice [32m200 [90m3ms - 355[0m
+this is ajax
+[ '0Dwu4.gif' ]
+[90mGET /nice [32m200 [90m129ms - 17[0m
+[90mGET /reddit [32m200 [90m4ms - 357[0m
+this is ajax
+[ '3yxHtJV.gif', '3pcWD9r.gif', '4E3nm.gif' ]
+[90mGET /reddit [32m200 [90m596ms - 51[0m
+[90mGET /nice%20reddit [32m200 [90m2ms - 362[0m
+this is ajax
+[]
+[90mGET /nice%20reddit [32m200 [90m129ms - 2[0m
+[90mGET /reddit%20nice [32m200 [90m10ms - 362[0m
+this is ajax
+[]
+[90mGET /reddit%20nice [32m200 [90m129ms - 2[0m

@@ -1,0 +1,12 @@
+Application has thrown an uncaught exception and is terminated:
+ReferenceError: files is not defined
+    at exports.filter.res.render.title (C:\Users\bernhard\Documents\My Web Sites\Express Site\routes\index.js:24:29)
+    at try_callback (C:\Users\bernhard\Documents\My Web Sites\Express Site\node_modules\redis\index.js:580:9)
+    at RedisClient.return_reply (C:\Users\bernhard\Documents\My Web Sites\Express Site\node_modules\redis\index.js:670:13)
+    at ReplyParser.RedisClient.init_parser (C:\Users\bernhard\Documents\My Web Sites\Express Site\node_modules\redis\index.js:312:14)
+    at ReplyParser.EventEmitter.emit (events.js:96:17)
+    at ReplyParser.send_reply (C:\Users\bernhard\Documents\My Web Sites\Express Site\node_modules\redis\lib\parser\javascript.js:300:10)
+    at ReplyParser.execute (C:\Users\bernhard\Documents\My Web Sites\Express Site\node_modules\redis\lib\parser\javascript.js:211:22)
+    at RedisClient.on_data (C:\Users\bernhard\Documents\My Web Sites\Express Site\node_modules\redis\index.js:535:27)
+    at Socket.<anonymous> (C:\Users\bernhard\Documents\My Web Sites\Express Site\node_modules\redis\index.js:91:14)
+    at Socket.EventEmitter.emit (events.js:96:17)

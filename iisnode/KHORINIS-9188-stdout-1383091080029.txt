@@ -1,0 +1,25 @@
+Express server listening on port \\.\pipe\176aa539-db74-4c99-b2a9-65cb79bf6136
+[90mGET /asdf%20reddit [32m200 [90m27ms - 362[0m
+this is ajax
+[ '3yxHtJV.gif', '3pcWD9r.gif', '4E3nm.gif' ]
+[90mGET /asdf%20reddit [32m200 [90m3102ms - 51[0m
+[90mGET /asdf%20reddit [32m200 [90m4ms - 362[0m
+this is ajax
+[ '3yxHtJV.gif', '3pcWD9r.gif', '4E3nm.gif' ]
+[90mGET /asdf%20reddit [32m200 [90m135ms - 51[0m
+[90mGET /asdf%20reddit [32m200 [90m8ms - 362[0m
+this is ajax
+[ '3yxHtJV.gif', '3pcWD9r.gif', '4E3nm.gif' ]
+[90mGET /asdf%20reddit [32m200 [90m138ms - 51[0m
+[90mGET /asdf%20reddit [32m200 [90m2ms - 362[0m
+this is ajax
+[ '3yxHtJV.gif', '3pcWD9r.gif', '4E3nm.gif' ]
+[90mGET /asdf%20reddit [32m200 [90m532ms - 51[0m
+[90mGET /asdf [32m200 [90m5ms - 355[0m
+this is ajax
+[]
+[90mGET /asdf [32m200 [90m153ms - 2[0m
+[90mGET /reddit [32m200 [90m3ms - 357[0m
+this is ajax
+[ '3yxHtJV.gif', '3pcWD9r.gif', '4E3nm.gif' ]
+[90mGET /reddit [32m200 [90m144ms - 51[0m
