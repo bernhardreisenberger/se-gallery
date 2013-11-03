@@ -1,0 +1,63 @@
+Express server listening on port \\.\pipe\361a94f4-0468-4d21-8d3f-82141c50bd11
+[90mGET / [32m200 [90m74ms - 1020[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m2ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET / [32m200 [90m16ms - 1020[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET /gallery [32m200 [90m38ms - 836[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+this is ajax
+To Client: 
+[90mGET /gallery [32m200 [90m138ms - 2[0m
+[90mGET /eis [32m200 [90m10ms - 832[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+this is ajax
+To Client: IMAG1303_1.jpg
+[90mGET /eis [32m200 [90m135ms - 22[0m
+[90mGET / [32m200 [90m18ms - 1020[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m0ms[0m
+All Input-Tags: elefant,tiere,
+elofant.jpg added to elefant
+elofant.jpg added to tiere
+elofant.jpg added to 
+uploaded file elofant.jpg
+[90mPOST /upload [36m302 [90m26ms - 86[0m
+[90mGET /elefant%20tiere, [32m200 [90m12ms - 843[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m2ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m0ms[0m
+this is ajax
+To Client: elofant.jpg
+[90mGET /elefant%20tiere, [32m200 [90m134ms - 19[0m
+[90mGET /elefant [32m200 [90m4ms - 836[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m0ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m0ms[0m
+this is ajax
+To Client: elofant.jpg
+[90mGET /elefant [32m200 [90m136ms - 19[0m
+[90mGET /tiere [32m200 [90m9ms - 834[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m2ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+this is ajax
+To Client: elofant.jpg
+[90mGET /tiere [32m200 [90m133ms - 19[0m
+[90mGET / [32m200 [90m10ms - 1020[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET / [32m200 [90m9ms - 1020[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m2ms[0m
+[90mGET /gallery [32m200 [90m6ms - 836[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+this is ajax
+To Client: 
+[90mGET /gallery [32m200 [90m137ms - 2[0m
+[90mGET /eis [32m200 [90m9ms - 832[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m0ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+this is ajax
+To Client: IMAG1303_1.jpg
+[90mGET /eis [32m200 [90m144ms - 22[0m

@@ -1,9 +1,12 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  
+  h1 Upload Image
+  br
+  br
 
   form(action="/upload", method="post", enctype="multipart/form-data")
     input(type="file", name="image")
-    input.tag(type="text", name="tags")
+    label(for="tags") Tag(s) hinzufuegen
+    input.tag(id="tags", type="text", name="tags", placeholder="[Press Tab for more Tabs]")

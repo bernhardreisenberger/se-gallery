@@ -10,7 +10,7 @@ client.auth(redisURL.auth.split(":")[1]);
 */
 
 exports.index = function (req, res) {
-    res.render('index', { title: 'Upload new Image' });
+    res.render('index', { title: 'PicsUniverse Album' });
 };
 
 exports.filter = function (req, res) {
@@ -29,11 +29,13 @@ exports.filter = function (req, res) {
                 callback();
             });
         }
-        addPic(sendresult);
+        
         //send filenames, must be in a function because of callback
         function sendresult() {
             res.json(filenames);
         }
+
+        addPic(sendresult);
     }
     else {
         res.render('gallery', { title: req.param('filter') });

@@ -1,10 +1,25 @@
 doctype 5
 html
   head
-    title= title
+    title=title
 
     script(type='text/javascript', src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
     script(type='text/javascript', src='/javascripts/script.js')
+    
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    block content
+    div.navbar.navbar-fixed-top
+      div.navbar-inner
+        div.container
+          a.brand(href='/') PicsUnivers Album
+          div.nav-collapse.collapse
+            ul.nav
+              li 
+                a(href='/') Home
+              li 
+                a(href='/gallery') Gallery
+    div(class="shadow", id="main")
+      block content
+
+    script(src='/stylesheets/bootstrap.min.js')

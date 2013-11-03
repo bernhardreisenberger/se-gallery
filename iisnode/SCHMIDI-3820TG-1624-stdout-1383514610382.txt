@@ -1,0 +1,18 @@
+Express server listening on port \\.\pipe\18f4ad35-c65a-441d-ab4d-bcf94b5ffbe5
+[90mGET / [32m200 [90m76ms - 1.01kb[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m5ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET /gallery [32m200 [90m14ms - 851[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+this is ajax
+To Client: 
+[90mGET /gallery [32m200 [90m147ms - 2[0m
+[90mGET / [36m304 [90m22ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
+[90mGET / [36m304 [90m13ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m0ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m0ms[0m
+[90mGET / [36m304 [90m15ms[0m
+[90mGET /stylesheets/bootstrap.min.js [33m404 [90m1ms[0m
