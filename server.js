@@ -27,6 +27,7 @@ app.configure('development', function () {
 });
 
 app.get('/', routes.index);
+app.get('/gallery', routes.showall);
 //:filter can be accessed with the req.param()
 app.get('/:filter', routes.filter);
 app.post('/upload', routes.upload);

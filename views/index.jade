@@ -7,6 +7,6 @@ block content
   br
 
   form(action="/upload", method="post", enctype="multipart/form-data")
-    input(type="file", name="image")
-    label(for="tags") Tag(s) hinzufuegen
+    input(type="file", name="images", multiple="")
+    p
     input.tag(id="tags", type="text", name="tags", placeholder="[Press Tab for more Tags]")

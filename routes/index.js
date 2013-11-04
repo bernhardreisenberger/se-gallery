@@ -5,6 +5,7 @@ var redisURL = url.parse('redis://rediscloud:O2OHt0F7MDYS4vYW@pub-redis-18098.us
 var client = redis.createClient(redisURL.port, redisURL.hostname, { no_ready_check: true });
 client.auth(redisURL.auth.split(":")[1]);
 
+
 /*
 * GET home page.
 */
@@ -29,7 +30,7 @@ exports.filter = function (req, res) {
                 callback();
             });
         }
-        
+
         //send filenames, must be in a function because of callback
         function sendresult() {
             res.json(filenames);
@@ -47,7 +48,11 @@ exports.filter = function (req, res) {
 exports.upload = function (req, res) {
     var imagePath = "./public/uploads";
 
-    if (req.files.image.name != '') {
+    if (req.files.images.length != 0) {
+        //if only one file is uploaded change to array
+        if (req.files.images.name != undefined) {
+            req.files.images = [req.files.images];
+        }
         //if only one tag will be submitted, we get a string...we do need an array
         if (typeof req.body.tags === 'string') {
             req.body.tags = [req.body.tags];
@@ -55,20 +60,53 @@ exports.upload = function (req, res) {
         console.log("All Input-Tags: " + req.body.tags);
         //to redis with the tags
         for (tag in req.body.tags) {
-            client.sadd(req.body.tags[tag], req.files.image.name);
-            console.log(req.files.image.name + " added to " + req.body.tags[tag]);
+            req.files.images.forEach(function (image) {
+                client.sadd(req.body.tags[tag], image.name);
+                console.log(image.name + " added to " + req.body.tags[tag]);
+            });
+            //save all tags as value to key "tags"
+            client.sadd('tags', req.body.tags[tag]);
         }
         //if uploads does not exist, create it
         if (!fs.existsSync(imagePath)) {
             fs.mkdirSync(imagePath);
         }
-        //write file to server and redirect to uploaded files
-        fs.readFile(req.files.image.path, function (err, data) {
-            var file = imagePath + "/" + req.files.image.name;
-            fs.writeFile(file, data, function (err) {
-                res.redirect("/" + req.body.tags.toString().replace(',',' '));
+        req.files.images.forEach(function (file) {
+            // filename should be day.month.year_milliseconds.extension 
+            var target_path = imagePath + "/" + file.name;
+            fs.rename(file.path, target_path, function (err) {
+                if (err) throw err;
+                // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
+                //fs.unlink(file.path, function () {
+                //    if (err) throw err;
+                //});
             });
         });
-        console.log("uploaded file " + req.files.image.name);
+        res.redirect("/" + req.body.tags.toString().replace(',', ' '));
     }
+    else {
+        res.redirect('back');
+    }
+};
+
+// show all thumbnails in the gallery
+exports.showall = function (req, res) {
+    var thumbnailPath = "./public/thumbnails";
+    var filenames = [];
+    function showall(callback) {
+        client.smembers('tags', function (err, tags) {
+            client.sunion(tags, function (err, result) {
+                filenames = result;
+                console.log("To Client: " + filenames);
+                callback();
+            });
+        });
+    }
+
+    //send filenames, must be in a function because of callback
+    function sendresult() {
+        res.json(filenames);
+    }
+
+    showall(sendresult);
 };

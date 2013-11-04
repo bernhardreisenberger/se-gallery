@@ -22,6 +22,10 @@ $(document).ready(function () {
                 var img = $('<img class="dynamic">');
                 img.attr('src', "uploads/" + val);
                 img.appendTo('#images');
+                //function for shadowbox
+                img.click(function () {
+                    lightbox("uploads/" + val);
+                });
             });
         });
     }
@@ -32,4 +36,54 @@ $(document).ready(function () {
         }
     });
 });
+
+
+/****************************************
+Barebones Lightbox Template
+by Kyle Schaeffer
+kyleschaeffer.com
+* requires jQuery
+****************************************/
+
+// display the lightbox
+function lightbox(picUrl) {
+
+    // add lightbox/shadow <div/>'s if not previously added
+    if ($('#lightbox').size() == 0) {
+        var theLightbox = $('<div id="lightbox"/>');
+        var theShadow = $('<div id="lightbox-shadow"/>');
+        $(theShadow).click(function (e) {
+            closeLightbox();
+        });
+        $('body').append(theShadow);
+        $('body').append(theLightbox);
+    }
+
+    // remove any previously added content
+    $('#lightbox').empty();
+
+    // insert pic
+    if (picUrl != null) {
+        // temporarily add a "Loading..." message in the lightbox
+        $('#lightbox').append($("<img id='theImg' src='" + picUrl + "'/>"));
+    }
+
+    // move the lightbox to the current window top + 100px
+    $('#lightbox').css('top', $(window).scrollTop() + 100 + 'px');
+
+    // display the lightbox
+    $('#lightbox').show();
+    $('#lightbox-shadow').show();
+}
+
+// close the lightbox
+function closeLightbox() {
+
+    // hide lightbox and shadow <div/>'s
+    $('#lightbox').hide();
+    $('#lightbox-shadow').hide();
+
+    // remove contents of lightbox in case a video or other content is actively playing
+    $('#lightbox').empty();
+}
 
