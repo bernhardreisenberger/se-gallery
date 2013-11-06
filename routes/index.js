@@ -1,10 +1,10 @@
 var fs = require('fs');
 var redis = require('redis');
 var url = require('url');
+var easyimg = require('easyimage');
 var redisURL = url.parse('redis://rediscloud:O2OHt0F7MDYS4vYW@pub-redis-18098.us-east-1-2.3.ec2.garantiadata.com:18098');
 var client = redis.createClient(redisURL.port, redisURL.hostname, { no_ready_check: true });
 client.auth(redisURL.auth.split(":")[1]);
-
 
 /*
 * GET home page.
@@ -47,6 +47,7 @@ exports.filter = function (req, res) {
 // upload new files to tag directory
 exports.upload = function (req, res) {
     var imagePath = "./public/uploads";
+    var thumbPath = "./public/thumbnails";
 
     if (req.files.images.length != 0) {
         //if only one file is uploaded change to array
@@ -71,9 +72,14 @@ exports.upload = function (req, res) {
         if (!fs.existsSync(imagePath)) {
             fs.mkdirSync(imagePath);
         }
+        //if thumbnails does not exist, create it
+        if (!fs.existsSync(thumbPath)) {
+            fs.mkdirSync(thumbPath);
+        }
         req.files.images.forEach(function (file) {
             // filename should be day.month.year_milliseconds.extension 
             var target_path = imagePath + "/" + file.name;
+            var thumb_path = thumbPath + "/" + file.name;
             fs.rename(file.path, target_path, function (err) {
                 if (err) throw err;
                 // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
@@ -81,6 +87,18 @@ exports.upload = function (req, res) {
                 //    if (err) throw err;
                 //});
             });
+
+            easyimg.thumbnail(
+            {
+                src: target_path, dst: thumb_path,
+                width: 200, height: 200,
+                x: 0, y: 0
+            }, function (err, image) {
+                if (err) throw err;
+                console.log('Thumbnail created');
+                console.log(image);
+            });
+
         });
         res.redirect("/" + req.body.tags.toString().replace(',', ' '));
     }
