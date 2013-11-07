@@ -20,7 +20,6 @@ exports.filter = function (req, res) {
         console.log('this is ajax');
         //split string to array
         var keywords = req.param('filter').split(" ");
-        var imagePath = "./public/uploads";
         var filenames = [];
         //here we have a typical asynchronous function. callback hell!
         function addPic(callback) {
@@ -83,9 +82,9 @@ exports.upload = function (req, res) {
             fs.rename(file.path, target_path, function (err) {
                 if (err) throw err;
                 // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
-                //fs.unlink(file.path, function () {
-                //    if (err) throw err;
-                //});
+                fs.unlink(file.path, function () {
+                    if (err) throw err;
+                });
             });
 
             easyimg.thumbnail(
@@ -109,22 +108,27 @@ exports.upload = function (req, res) {
 
 // show all thumbnails in the gallery
 exports.showall = function (req, res) {
-    var thumbnailPath = "./public/thumbnails";
-    var filenames = [];
+    var filenames = {};
     function showall(callback) {
         client.smembers('tags', function (err, tags) {
-            client.sunion(tags, function (err, result) {
-                filenames = result;
-                console.log("To Client: " + filenames);
-                callback();
+            tags.forEach(function (tag) {
+                client.sunion(tag, function (err, result) {
+                    filenames[tag] = result;
+                    console.log("To Client with all: " + tag + ": " + filenames[tag]);
+                    //check if all tags are in object filenames
+                    if (Object.keys(filenames).length == tags.length) {
+                        callback();
+                    }
+                });
             });
         });
     }
 
     //send filenames, must be in a function because of callback
     function sendresult() {
-        res.json(filenames);
+        console.log("data: " + JSON.stringify(filenames));
+        //render with completegallery.jade and provide locals title and data
+        res.render('completegallery', { title: req.param('Image Gallery'), data: JSON.stringify(filenames) });
     }
-
     showall(sendresult);
 };

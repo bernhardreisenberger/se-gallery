@@ -14,20 +14,23 @@ $(document).ready(function () {
         }
     });
     //trigger ajax request only if there is a filter in the url
-    if (filter != '') {
+    if (filter != '' && filter != 'gallery') {
         $.get(filter, function (data) {
-            console.log(data);
             //add html for each image
-            $.each(data, function (i, val) {
-                var img = $('<img class="dynamic">');
-                img.attr('src', "uploads/" + val);
-                img.appendTo('#images');
-                //function for shadowbox
-                img.click(function () {
-                    lightbox("uploads/" + val);
-                });
-            });
+            $.each(data, function (i, val) { addimageelement(i, val) });
         });
+    }
+    if (filter == 'gallery') {
+        data = JSON.parse(tagswithdata);
+        console.log(data);
+        //for each key of the object (each tag)
+        for (var key in data) {
+            console.log(key + ": " + data[key]);
+            var p = $('<p>' + key + '</p>');
+            p.appendTo('#images');
+            //add html for each image
+            $.each(data[key], function (i, val) { addimageelement(i, val) });
+        }
     }
     //you can use TAB to add new inputs for tags
     $('.tag').keydown(function (e) {
@@ -37,6 +40,15 @@ $(document).ready(function () {
     });
 });
 
+function addimageelement(i, val) {
+    var img = $('<img class="dynamic">');
+    img.attr('src', "thumbnails/" + val);
+    img.appendTo('#images');
+    //function for shadowbox
+    img.click(function () {
+        lightbox("uploads/" + val);
+    });
+}
 
 /****************************************
 Barebones Lightbox Template
