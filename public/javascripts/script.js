@@ -8,7 +8,7 @@ $(document).ready(function () {
         }
     });
     //enter a filter and trigger ajax request
-    $('#filter').keyup(function (e) {
+    $('#tag-search').keyup(function (e) {
         if (e.keyCode == 13) {
             window.location.replace(this.value);
         }
@@ -21,16 +21,7 @@ $(document).ready(function () {
         });
     }
     if (filter == 'gallery') {
-        data = JSON.parse(tagswithdata);
-        console.log(data);
-        //for each key of the object (each tag)
-        for (var key in data) {
-            console.log(key + ": " + data[key]);
-            var p = $('<p>' + key + '</p>');
-            p.appendTo('#images');
-            //add html for each image
-            $.each(data[key], function (i, val) { addimageelement(i, val) });
-        }
+        fillGallery();
     }
     //you can use TAB to add new inputs for tags
     $('.tag').keydown(function (e) {
@@ -38,7 +29,62 @@ $(document).ready(function () {
             $(this).clone(withDataAndEvents = true).appendTo('form');
         }
     });
+
+    $('.clickable').click(function (e) {
+        filterByTag(e);
+    });
+
+
 });
+
+function fillGallery() {
+    data = JSON.parse(tagswithdata);
+    //console.log(data);
+
+    //for each key of the object (each tag)
+    for (var key in data) {
+        //console.log(key + ": " + data[key]);
+        var tag = $('<p class="filter clickable">' + key + '</p>');
+        tag.appendTo('#images');
+        //only add tags to the filter, if #filter-zone not filled completely
+        if ($('#filter-zone p').length < Object.keys(data).length) {
+            $('#filter-zone').append(tag.clone());
+        }
+        //add html for each image
+        $.each(data[key], function (i, val) { addimageelement(i, val) });
+    }
+}
+
+var filenames = {};
+function filterByTag(tag) {
+    //highlight filter
+    $(tag.target).toggleClass('filter-selected');
+    //if filter activated
+    if ($(tag.target).hasClass('filter-selected')) {
+        //empty gallery
+        $('#images').empty();
+        //add each filename to filenames
+        $.each(JSON.parse(tagswithdata)[tag.target.innerHTML], function (i, val) {
+            filenames[val]=true;
+        });
+        //add html-element for each filename
+        $.each(filenames, function (i, val) { addimageelement(val, i) });
+    }
+    //if filter deactivated
+    else {
+        //delete filenames and remove from website
+        $.each(JSON.parse(tagswithdata)[tag.target.innerHTML], function (i, val) {
+            delete filenames[val];
+            removeimageelement(i, val);
+        });
+        if (!$('#filter-zone p').hasClass('filter-selected')) {
+            //refill the default gallery
+            fillGallery();
+        }
+    }
+}
+
+
 
 function addimageelement(i, val) {
     var img = $('<img class="dynamic">');
@@ -48,6 +94,12 @@ function addimageelement(i, val) {
     img.click(function () {
         lightbox("uploads/" + val);
     });
+}
+
+function removeimageelement(i, val) {
+    console.log("toremove: " + val);
+    $('#images img[src="'+"thumbnails/"+val+'"]').remove();
+
 }
 
 /****************************************

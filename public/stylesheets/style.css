@@ -17,9 +17,26 @@ a {
     cursor: pointer;
 }
 
-#filter {
+#tag-search {
     width: 100%;
     min-width: 300px;
+}
+
+#filter-zone p {
+    float: left;
+    margin-right: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.filter-selected {
+    background-color: #e30613;
+    border-radius: 10px;
+    color: #ccc;
+}
+
+#gallery {
+    clear: both;
 }
 
 .shadow {

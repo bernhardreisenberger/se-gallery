@@ -1,6 +1,11 @@
 extends gallery
 
+block filter
+    #filter-zone
+        h1 Filter
+
+
 append content
 
-  script(type='text/javascript')
-    var tagswithdata =!{JSON.stringify(data)}
+    script(type='text/javascript')
+        var tagswithdata =!{JSON.stringify(data)}
