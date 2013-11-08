@@ -33,8 +33,6 @@ $(document).ready(function () {
     $('.clickable').click(function (e) {
         filterByTag(e);
     });
-
-
 });
 
 function fillGallery() {
@@ -55,33 +53,40 @@ function fillGallery() {
     }
 }
 
-var filenames = {};
+var tags = {};
 function filterByTag(tag) {
     //highlight filter
     $(tag.target).toggleClass('filter-selected');
     //if filter activated
     if ($(tag.target).hasClass('filter-selected')) {
-        //empty gallery
-        $('#images').empty();
-        //add each filename to filenames
-        $.each(JSON.parse(tagswithdata)[tag.target.innerHTML], function (i, val) {
-            filenames[val]=true;
-        });
-        //add html-element for each filename
-        $.each(filenames, function (i, val) { addimageelement(val, i) });
+        //make a set of all tags
+        tags[tag.target.innerHTML] = true;
+        //get filenames and display them
+        getSetOfFilenames(tags);
     }
     //if filter deactivated
     else {
-        //delete filenames and remove from website
-        $.each(JSON.parse(tagswithdata)[tag.target.innerHTML], function (i, val) {
-            delete filenames[val];
-            removeimageelement(i, val);
-        });
+        //delete tag from set tags
+        delete tags[tag.target.innerHTML];
+        //get filenames and display them
+        getSetOfFilenames(tags);
         if (!$('#filter-zone p').hasClass('filter-selected')) {
             //refill the default gallery
             fillGallery();
         }
     }
+}
+
+function getSetOfFilenames(tags) {
+    var filenames = {};
+    $('#images').empty();
+    for (key in tags) {
+        $.each(JSON.parse(tagswithdata)[key], function (i, val) {
+            filenames[val] = true;
+        });
+    }
+    //return filenames;
+    $.each(filenames, function (i, val) { addimageelement(val, i) });
 }
 
 
@@ -94,12 +99,6 @@ function addimageelement(i, val) {
     img.click(function () {
         lightbox("uploads/" + val);
     });
-}
-
-function removeimageelement(i, val) {
-    console.log("toremove: " + val);
-    $('#images img[src="'+"thumbnails/"+val+'"]').remove();
-
 }
 
 /****************************************
