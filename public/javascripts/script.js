@@ -30,7 +30,7 @@ $(document).ready(function () {
         }
     });
 
-    $('.clickable').click(function (e) {
+    $('.filter').click(function (e) {
         filterByTag(e);
     });
 });
@@ -42,11 +42,11 @@ function fillGallery() {
     //for each key of the object (each tag)
     for (var key in data) {
         //console.log(key + ": " + data[key]);
-        var tag = $('<p class="filter clickable">' + key + '</p>');
+        var tag = $('<h2>' + key + '</h2>');
         tag.appendTo('#images');
         //only add tags to the filter, if #filter-zone not filled completely
         if ($('#filter-zone p').length < Object.keys(data).length) {
-            $('#filter-zone').append(tag.clone());
+            $('#filter-zone').append($('<p class="filter">' + key + '</p>'));
         }
         //add html for each image
         $.each(data[key], function (i, val) { addimageelement(i, val) });
@@ -92,7 +92,7 @@ function getSetOfFilenames(tags) {
 
 
 function addimageelement(i, val) {
-    var img = $('<img class="dynamic">');
+    var img = $('<img onerror="this.src=\'images/404.gif\'" class="dynamic">');
     img.attr('src', "thumbnails/" + val);
     img.appendTo('#images');
     //function for shadowbox
