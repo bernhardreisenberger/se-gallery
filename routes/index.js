@@ -61,8 +61,11 @@ exports.upload = function (req, res) {
         //to redis with the tags
         for (tag in req.body.tags) {
             req.files.images.forEach(function (image) {
-                client.sadd(req.body.tags[tag], image.name);
-                console.log(image.name + " added to " + req.body.tags[tag]);
+                //check for type image
+                if (image.type.indexOf("image/") === 0) {
+                    client.sadd(req.body.tags[tag], image.name);
+                    console.log(image.name + " added to " + req.body.tags[tag]);
+                } 
             });
             //save all tags as value to key "tags"
             client.sadd('tags', req.body.tags[tag]);
@@ -76,28 +79,31 @@ exports.upload = function (req, res) {
             fs.mkdirSync(thumbPath);
         }
         req.files.images.forEach(function (file) {
-            console.log("filetype: " + file.type);
-            if (file.type == "image/png" || file.type == "image/gif" || file.type == "image/jpeg") {
-                // filename should be day.month.year_milliseconds.extension 
+            //check for type image
+            if (file.type.indexOf("image/") === 0) {
                 var target_file = imagePath + "/" + file.name;
                 var thumb_file = thumbPath + "/" + file.name;
+                //move file to uploads folder
                 fs.rename(file.path, target_file, function (err) {
                     if (err) throw err;
                     // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
                     fs.unlink(file.path, function () {
                         if (err) throw err;
                     });
-
-                    //easyimg produces error file not supported
-                    easyimg.thumbnail(
-                    {
-                        src: target_file, dst: thumb_file,
-                        width: 200, height: 200,
-                        x: 0, y: 0
-                    }, function (err, image) {
-                        if (err) throw err;
-                        console.log('Thumbnail created');
-                        console.log(image);
+                    //easyimg produces error 'file not supported' if imagemagick does not exist
+                    //better error handling
+                    easyimg.info(target_file, function (err, stdout, stderr) {
+                        if (err) throw err + ' Imagemagick probably not installed correctly';
+                        easyimg.thumbnail(
+                        {
+                            src: target_file, dst: thumb_file,
+                            width: 200, height: 200,
+                            x: 0, y: 0
+                        }, function (err, image) {
+                            if (err) throw err;
+                            console.log('Thumbnail created');
+                            console.log(image);
+                        });
                     });
                 });
             }
