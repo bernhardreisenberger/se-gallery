@@ -76,28 +76,31 @@ exports.upload = function (req, res) {
             fs.mkdirSync(thumbPath);
         }
         req.files.images.forEach(function (file) {
-            // filename should be day.month.year_milliseconds.extension 
-            var target_path = imagePath + "/" + file.name;
-            var thumb_path = thumbPath + "/" + file.name;
-            fs.rename(file.path, target_path, function (err) {
-                if (err) throw err;
-                // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
-                fs.unlink(file.path, function () {
+            console.log("filetype: " + file.type);
+            if (file.type == "image/png" || file.type == "image/gif" || file.type == "image/jpeg") {
+                // filename should be day.month.year_milliseconds.extension 
+                var target_file = imagePath + "/" + file.name;
+                var thumb_file = thumbPath + "/" + file.name;
+                fs.rename(file.path, target_file, function (err) {
                     if (err) throw err;
+                    // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
+                    fs.unlink(file.path, function () {
+                        if (err) throw err;
+                    });
+
+                    //easyimg produces error file not supported
+                    easyimg.thumbnail(
+                    {
+                        src: target_file, dst: thumb_file,
+                        width: 200, height: 200,
+                        x: 0, y: 0
+                    }, function (err, image) {
+                        if (err) throw err;
+                        console.log('Thumbnail created');
+                        console.log(image);
+                    });
                 });
-            });
-
-            easyimg.thumbnail(
-            {
-                src: target_path, dst: thumb_path,
-                width: 200, height: 200,
-                x: 0, y: 0
-            }, function (err, image) {
-                if (err) throw err;
-                console.log('Thumbnail created');
-                console.log(image);
-            });
-
+            }
         });
         res.redirect("/" + req.body.tags.toString().replace(',', ' '));
     }

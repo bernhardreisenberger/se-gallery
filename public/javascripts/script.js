@@ -38,18 +38,23 @@ $(document).ready(function () {
 function fillGallery() {
     data = JSON.parse(tagswithdata);
     //console.log(data);
-
-    //for each key of the object (each tag)
+    var keys = [];
     for (var key in data) {
+        keys.push(key);
+    }
+    keys.sort();
+    //for each key of the object (each tag)
+    for (key in keys) {
         //console.log(key + ": " + data[key]);
-        var tag = $('<h2>' + key + '</h2>');
+        var tag = $('<h2>' + keys[key] + '</h2>');
         tag.appendTo('#images');
+
         //only add tags to the filter, if #filter-zone not filled completely
         if ($('#filter-zone p').length < Object.keys(data).length) {
-            $('#filter-zone').append($('<p class="filter">' + key + '</p>'));
+            $('#filter-zone').append($('<p class="filter">' + keys[key] + '</p>'));
         }
         //add html for each image
-        $.each(data[key], function (i, val) { addimageelement(i, val) });
+        $.each(data[keys[key]], function (i, val) { addimageelement(i, val) });
     }
 }
 
