@@ -38,7 +38,7 @@ exports.filter = function (req, res) {
         addPic(sendresult);
     }
     else {
-        res.render('gallery', { title: req.param('filter') });
+        res.render('gallery', { title: 'Gallery' });
     }
 };
 
@@ -137,7 +137,7 @@ exports.showall = function (req, res) {
     function sendresult() {
         console.log("data: " + JSON.stringify(filenames));
         //render with completegallery.jade and provide locals title and data
-        res.render('completegallery', { title: req.param('Image Gallery'), data: JSON.stringify(filenames) });
+        res.render('completegallery', { title: 'Gallery', data: JSON.stringify(filenames) });
     }
     showall(sendresult);
 };
