@@ -133,7 +133,11 @@ function lightbox(picUrl) {
     // insert pic
     if (picUrl != null) {
         // temporarily add a "Loading..." message in the lightbox
-        $('#lightbox').append($("<img id='theImg' src='" + picUrl + "'/>"));
+        if(ImageExist(picUrl)) {
+            $('#lightbox').append($("<img id='theImg' src='" + picUrl + "'/>"));
+        } else {
+            $('#lightbox').append($("<img id='theImg' src='uploads/404.gif'/>"));
+        }
     }
 
     // move the lightbox to the current window top + 100px
@@ -142,6 +146,14 @@ function lightbox(picUrl) {
     // display the lightbox
     $('#lightbox').show();
     $('#lightbox-shadow').show();
+}
+
+//helper function for checking existing image
+function ImageExist(url) 
+{
+   var img = new Image();
+   img.src = url;
+   return img.height != 0;
 }
 
 // close the lightbox
