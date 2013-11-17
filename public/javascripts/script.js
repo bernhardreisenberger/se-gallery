@@ -131,14 +131,7 @@ function lightbox(picUrl) {
     $('#lightbox').empty();
 
     // insert pic
-    if (picUrl != null) {
-        // temporarily add a "Loading..." message in the lightbox
-        if(ImageExist(picUrl)) {
-            $('#lightbox').append($("<img id='theImg' src='" + picUrl + "'/>"));
-        } else {
-            $('#lightbox').append($("<img id='theImg' src='uploads/404.gif'/>"));
-        }
-    }
+    $('#lightbox').append($("<img onerror='images/404.gif/' id='theImg' src='" + picUrl + "'/>"));
 
     // move the lightbox to the current window top + 100px
     $('#lightbox').css('top', $(window).scrollTop() + 100 + 'px');
