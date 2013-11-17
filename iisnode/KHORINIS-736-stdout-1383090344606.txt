@@ -1,3 +1,0 @@
-Express server listening on port \\.\pipe\072da785-ebe0-4784-a179-e5a2a98cf0a7
-[90mGET /nice [32m200 [90m26ms - 355[0m
-this is ajax

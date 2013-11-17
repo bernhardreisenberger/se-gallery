@@ -1,5 +1,0 @@
-Express server listening on port \\.\pipe\cbfd6215-c182-47f2-ae1f-102d821930d9
-[90mGET /nice [32m200 [90m75ms - 355[0m
-this is ajax
-[ '0Dwu4.gif' ]
-[90mGET /nice [32m200 [90m144ms - 17[0m
