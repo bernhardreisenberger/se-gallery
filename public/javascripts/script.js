@@ -131,7 +131,7 @@ function lightbox(picUrl) {
     $('#lightbox').empty();
 
     // insert pic
-    $('#lightbox').append($("<img onerror='images/404.gif/' id='theImg' src='" + picUrl + "'/>"));
+    $('#lightbox').append($("<img onerror='this.src=\"images/404.gif\"' id='theImg' src='" + picUrl + "'/>"));
 
     // move the lightbox to the current window top + 100px
     $('#lightbox').css('top', $(window).scrollTop() + 100 + 'px');
