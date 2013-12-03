@@ -18,7 +18,8 @@
   "dependencies": {
     "jade": "*",
     "express": "~3.1.0",
-    "redis": "*"
+    "redis": "*",
+    "easyimage": "*"
   },
   "noAnalyze": true,
   "license": "Apache",
