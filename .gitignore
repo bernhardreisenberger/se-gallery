@@ -1,4 +1,4 @@
 
-/iisnode
-/public/thumbnails
-/public/uploads
+iisnode/
+public/thumbnails/
+public/uploads/
