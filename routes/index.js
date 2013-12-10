@@ -5,6 +5,8 @@ var easyimg = require('easyimage');
 var redisURL = url.parse('redis://rediscloud:O2OHt0F7MDYS4vYW@pub-redis-18098.us-east-1-2.3.ec2.garantiadata.com:18098');
 var client = redis.createClient(redisURL.port, redisURL.hostname, { no_ready_check: true });
 client.auth(redisURL.auth.split(":")[1]);
+var sqlconnect = require('../server');
+
 
 /*
 * GET home page.
@@ -12,6 +14,13 @@ client.auth(redisURL.auth.split(":")[1]);
 
 exports.index = function (req, res) {
     res.render('index', { title: 'PicsUniverse Album' });
+};
+
+exports.testdb = function (req, res) {
+    sqlconnect.connection.connect(function (err) {
+        !err ? console.log("connection established") : console.log(err);
+    });
+    res.redirect('/');
 };
 
 exports.filter = function (req, res) {
@@ -65,7 +74,7 @@ exports.upload = function (req, res) {
                 if (image.type.indexOf("image/") === 0) {
                     client.sadd(req.body.tags[tag], image.name);
                     console.log(image.name + " added to " + req.body.tags[tag]);
-                } 
+                }
             });
             //save all tags as value to key "tags"
             client.sadd('tags', req.body.tags[tag]);

@@ -7,6 +7,7 @@ var express = require('express')
   , routes = require('./routes')
   , http = require('http')
   , path = require('path')
+  , mysql = require('mysql')
   , passport = require('passport')
   , GoogleStrategy = require('passport-google').Strategy;
 
@@ -33,31 +34,44 @@ passport.use(new GoogleStrategy({
     returnURL: 'http://localhost:3000/auth/google/return',
     realm: 'http://localhost:3000/'
 },
-  function (identifier, done) {
-      console.log('ident:' + identifier);
-      //User.findByOpenID({ openId: identifier }, function (err, user) {
-      //    return done(err, user);
+  function (identifier, profile, done) {
+      console.log('ident: ' + identifier);
+      //User.findOrCreate({ openId: identifier }, function (err, user) {
+      //    done(err, user);
       //});
+      profile.identifier = identifier;
+      return done(null, profile);
   }
 ));
 
-
+exports.connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'se-galleryUkd2o',
+    password: '}z{tjB)]t;x2'
+});
 
 app.get('/', function (req, res) {
     res.render('index', { title: 'Home' })
 });
+app.get('/test/db', routes.testdb);
 app.get('/gallery', routes.showall);
 //:filter can be accessed with the req.param()
 app.get('/:filter', routes.filter);
+
 app.post('/upload', routes.upload);
-app.get('/auth/google',
-  passport.authenticate('google'));
+app.get('/auth/google', passport.authenticate('google'));
 app.get('/auth/google/return',
   passport.authenticate('google', { failureRedirect: '/login' }),
   function (req, res) {
-      // Successful authentication, redirect home.
       res.redirect('/');
   });
+
+app.get('/auth/logout', function (req, res) {
+    req.logout();
+    res.redirect('/');
+});
+
+
 
 
 http.createServer(app).listen(app.get('port'), function () {
