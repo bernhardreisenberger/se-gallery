@@ -5,7 +5,7 @@ var easyimg = require('easyimage');
 var redisURL = url.parse('redis://rediscloud:O2OHt0F7MDYS4vYW@pub-redis-18098.us-east-1-2.3.ec2.garantiadata.com:18098');
 var client = redis.createClient(redisURL.port, redisURL.hostname, { no_ready_check: true });
 client.auth(redisURL.auth.split(":")[1]);
-var sqlconnect = require('../server');
+var sqlconnect = require('../database');
 
 
 /*
@@ -13,6 +13,7 @@ var sqlconnect = require('../server');
 */
 
 exports.index = function (req, res) {
+    console.log("isauthenticated: " + req.isAuthenticated());
     res.render('index', { title: 'PicsUniverse Album' });
 };
 
@@ -124,8 +125,19 @@ exports.upload = function (req, res) {
     }
 };
 
+exports.usergallery = function (req, res) {
+    if (req.isAuthenticated()) {
+        res.render('mygallery', { title: 'My Gallery' });
+    }
+    else {
+        res.redirect('/auth/google');
+    }
+}
+
 // show all thumbnails in the gallery
 exports.showall = function (req, res) {
+    //console.log("USER: " + req.user.identifier);
+    console.log("isauthenticated: " + req.isAuthenticated());
     var filenames = {};
     function showall(callback) {
         client.smembers('tags', function (err, tags) {

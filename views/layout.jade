@@ -15,8 +15,10 @@ html
           a.brand(href='/') PicsUniverse Album 
           div.nav-collapse.collapse
             ul.nav
-              li(class=title=='Home'?'active':undefined)
+              li(class=title=='Home'?'active':undefined')
                 a(href="/") Home
+              li(class=title=='My Gallery'?'active':undefined)
+                a(href="/mygallery") My Gallery
               li(class=title=='Gallery'?'active':undefined)
                 a(href="/gallery") Gallery
     div(class="shadow", id="main")
