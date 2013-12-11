@@ -1,11 +1,6 @@
 var fs = require('fs');
-var redis = require('redis');
 var url = require('url');
 var easyimg = require('easyimage');
-var Q = require('q');
-var redisURL = url.parse('redis://rediscloud:O2OHt0F7MDYS4vYW@pub-redis-18098.us-east-1-2.3.ec2.garantiadata.com:18098');
-var client = redis.createClient(redisURL.port, redisURL.hostname, { no_ready_check: true });
-client.auth(redisURL.auth.split(":")[1]);
 var dbconfig = {
     host: 'localhost',
     database: 'se-gallery',
@@ -69,23 +64,20 @@ exports.bytag = function (req, res) {
 
         handleDisconnect();
         function addPic(callback) {
+            var ids = [];
             for (i in keywords) {
                 console.log(keywords[i]);
                 connection.query('select image_id from imagetaguser where tag_id like (' +
                 ' select tag_id from tag where tag_name like "' + keywords[i] + '");', function (err, rows, fields) {
                     for (i in rows) {
-                        connection.query('select image_name from image where image_id like "' + rows[i].image_id + '";', function (err, rows, fields) {
-                            for (i in rows) {
-                                filenames.push(rows[i].image_name);
-                                console.log('test ' + filenames);
-                            }
-
-                        });
-                        callback();
+                        //connection.query('select image_name from image where image_id like "' + rows[i].image_id + '";', function (err, rows, fields) {
+                        ids.push(rows[i].image_id);
                     }
                 });
-
+                console.log('inloop '+ids);
             }
+            console.log(ids);
+            //getNamesFromDB(ids, [], callback);
         }
         //here we have a typical asynchronous function. callback hell!
         //function addPic(callback) {
@@ -97,7 +89,7 @@ exports.bytag = function (req, res) {
         //}
 
         ////send filenames, must be in a function because of callback
-        function sendresult() {
+        function sendresult(err, filenames) {
             res.json(filenames);
         }
 
@@ -116,22 +108,16 @@ exports.byuser = function (req, res) {
         function addPic(callback) {
             connection.query('select image_id from imagetaguser where user_id like (' +
                 ' select user_id from user where token like "' + req.user.id + '");', function (err, rows, fields) {
-                    console.log(rows, err);
-                    function add(callback) {
-                        for (i in rows) {
-                            var temp = [];
-                            connection.query('select image_name from image where image_id like "' + rows[i].image_id + '";', function (err, rows, fields) {
-                                temp.push(rows[0].image_name);
-                                filenames = rows;
-                                console.log("erg:" + temp);
-                            });
-                        }
+                    var ids = [];
+                    for (i in rows) {
+                        ids.push(rows[i].image_id);
                     }
-
+                    console.log(ids);
+                    getNamesFromDB(ids, [], callback);
                 });
         }
 
-        function sendresult() {
+        function sendresult(err, filenames) {
             res.json(filenames);
         }
 
@@ -144,6 +130,18 @@ exports.byuser = function (req, res) {
         res.redirect('/auth/google');
     }
 };
+
+function getNamesFromDB(ids, sofar, cb) {
+    var id = ids.shift();
+    if (!id)
+        cb(null, sofar);
+    else {
+        connection.query('select image_name from image where image_id like "' + id + '";', function (err, rows, fields) {
+            sofar.push(rows[0].image_name);
+            getNamesFromDB(ids, sofar, cb);
+        });
+    }
+}
 
 
 // upload new files to tag directory
