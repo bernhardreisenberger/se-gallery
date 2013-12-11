@@ -58,7 +58,7 @@ passport.use(new GoogleStrategy({
 
 
 
-app.get('/test/db', routes.testdb);
+app.get('/test/db', api.createdb);
 
 //website routes
 app.get('/', function (req, res) {

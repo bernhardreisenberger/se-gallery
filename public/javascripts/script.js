@@ -1,9 +1,10 @@
+var tagswithdata = {};
+
 $(document).ready(function () {
+
     var baseURL = location.hostname + ':' + location.port;
     var relativeURL = window.location.pathname;
-    console.log('url: ' + baseURL);
     var filter = relativeURL.substring(relativeURL.lastIndexOf('/') + 1);
-    console.log('filter: ' + filter);
 
     $('form input').keyup(function (e) {
         if (e.keyCode == 13) {
@@ -13,7 +14,7 @@ $(document).ready(function () {
     //enter a filter and trigger ajax request
     $('#tag-search').keyup(function (e) {
         if (e.keyCode == 13) {
-            window.location.replace('/t/'+this.value);
+            window.location.replace('/t/' + this.value);
         }
     });
     //trigger ajax request only if there is a filter in the url
@@ -24,7 +25,13 @@ $(document).ready(function () {
         });
     }
     if (filter == 'gallery') {
-        fillGallery();
+        $.get(filter, function (data) {
+            tagswithdata = data;
+            fillGallery();
+            $('.filter').click(function (e) {
+                filterByTag(e);
+            });
+        });
     }
     //you can use TAB to add new inputs for tags
     $('.tag').keydown(function (e) {
@@ -32,14 +39,10 @@ $(document).ready(function () {
             $(this).clone(withDataAndEvents = true).appendTo('form');
         }
     });
-
-    $('.filter').click(function (e) {
-        filterByTag(e);
-    });
 });
 
 function fillGallery() {
-    data = JSON.parse(tagswithdata);
+    var data = tagswithdata;
     //console.log(data);
     var keys = [];
     for (var key in data) {
@@ -89,7 +92,7 @@ function getSetOfFilenames(tags) {
     var filenames = {};
     $('#images').empty();
     for (key in tags) {
-        $.each(JSON.parse(tagswithdata)[key], function (i, val) {
+        $.each(tagswithdata[key], function (i, val) {
             filenames[val] = true;
         });
     }

@@ -9,6 +9,37 @@ var dbconfig = {
 };
 var mysql = require('mysql');
 
+exports.createdb = function (req, res) {
+    handleDisconnect();
+    connection.query('create table if not exists image (' +
+        'image_id int not null auto_increment primary key,' +
+        'image_name varchar(255) not null unique);', function (err, rows, fields) {
+            if (err) console.log(err);
+        });
+    connection.query('create table if not exists tag (' +
+        'tag_id int not null auto_increment primary key,' +
+        'tag_name varchar(30) not null unique);', function (err, rows, fields) {
+            if (err) console.log(err);
+        });
+    connection.query('create table if not exists user (' +
+        'user_id int not null auto_increment primary key,' +
+        'token varchar(255) not null unique);', function (err, rows, fields) {
+            if (err) console.log(err);
+        });
+    connection.query('create table if not exists imagetaguser (' +
+        'image_id int not null,' +
+        'tag_id int not null,' +
+        'user_id int not null,' +
+        'primary key (image_id, tag_id, user_id),' +
+        'foreign key (image_id) references image(image_id),' +
+        'foreign key (tag_id) references tag(tag_id),' +
+        'foreign key (user_id) references user(user_id));', function (err, rows, fields) {
+            if (err) console.log(err);
+        });
+    connection.end();
+    res.redirect('/');
+};
+
 exports.bytag = function (req, res) {
     //split string to array
     var keywords = req.param('tag').split(" ");
