@@ -51,7 +51,7 @@ passport.use(new GoogleStrategy({
       console.log('ident: ' + identifier);
       //substring important part of the identifier
       //get saved in req.user and can be accessed by req.user.identifier
-      return done(null, { id: identifier.substring(identifier.indexOf('=')+1) });
+      return done(null, { id: identifier.substring(identifier.indexOf('=') + 1) });
   }
 ));
 
@@ -65,6 +65,9 @@ app.get('/', function (req, res) {
     res.render('index', { title: 'Home' })
 });
 app.post('/upload', routes.upload);
+app.get('/u', function (req, res) {
+    res.redirect('/auth/google');
+});
 app.get('/u/:user', routes.byuser);
 app.get('/gallery', routes.gallery);
 //:filter can be accessed with the req.param()
@@ -82,7 +85,7 @@ app.get('/auth/google/return',
   passport.authenticate('google', { failureRedirect: '/login' }),
 //redirect to personal site
   function (req, res) {
-      res.redirect('/u/'+req.user.id);
+      res.redirect('/u/' + req.user.id);
   });
 app.get('/auth/logout', function (req, res) {
     req.logout();

@@ -107,7 +107,7 @@ exports.byuser = function (req, res) {
         handleDisconnect();
         function addPic(callback) {
             connection.query('select image_id from imagetaguser where user_id like (' +
-                ' select user_id from user where token like "' + req.user.id + '");', function (err, rows, fields) {
+                ' select user_id from user where token like "' + req.param('user') + '");', function (err, rows, fields) {
                     var ids = [];
                     for (i in rows) {
                         ids.push(rows[i].image_id);
