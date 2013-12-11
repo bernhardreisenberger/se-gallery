@@ -5,6 +5,7 @@
 
 var express = require('express')
   , routes = require('./routes')
+  , api = require('./routes/api')
   , http = require('http')
   , path = require('path')
   , passport = require('passport')
@@ -48,38 +49,45 @@ passport.use(new GoogleStrategy({
 },
   function (identifier, profile, done) {
       console.log('ident: ' + identifier);
+      //substring important part of the identifier
       //get saved in req.user and can be accessed by req.user.identifier
-      return done(null, { identifier: identifier });
+      return done(null, { id: identifier.substring(identifier.indexOf('=')+1) });
   }
 ));
 
 
 
+
+app.get('/test/db', routes.testdb);
+
+//website routes
 app.get('/', function (req, res) {
     res.render('index', { title: 'Home' })
 });
-app.get('/test/db', routes.testdb);
-app.get('/mygallery', routes.usergallery);
-app.get('/gallery', routes.showall);
-//:filter can be accessed with the req.param()
-app.get('/:filter', routes.filter);
-
 app.post('/upload', routes.upload);
+app.get('/u/:user', routes.byuser);
+app.get('/gallery', routes.gallery);
+//:filter can be accessed with the req.param()
+app.get('/t/:tag', routes.bytag);
+
+//api routes
+//app.post('/api/upload', api.upload);
+//app.get('/api/u/:user', api.byuser);
+//app.get('/api/gallery', api.gallery);
+//app.get('/api/t/:tag', api.bytag)
+
+//authentification routes
 app.get('/auth/google', passport.authenticate('google'));
 app.get('/auth/google/return',
   passport.authenticate('google', { failureRedirect: '/login' }),
+//redirect to personal site
   function (req, res) {
-      console.log("isauthenticated: " + req.isAuthenticated());
-      res.redirect('/mygallery');
+      res.redirect('/u/'+req.user.id);
   });
-
 app.get('/auth/logout', function (req, res) {
     req.logout();
     res.redirect('/');
 });
-
-
-
 
 http.createServer(app).listen(app.get('port'), function () {
     console.log("Express server listening on port " + app.get('port'));
