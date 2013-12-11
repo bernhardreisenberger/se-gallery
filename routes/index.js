@@ -59,38 +59,21 @@ exports.bytag = function (req, res) {
         console.log('this is ajax');
         //split string to array
         var keywords = req.param('tag').split(" ");
-        var filenames = [];
         console.log("keywords: " + keywords);
 
         handleDisconnect();
         function addPic(callback) {
-            var ids = [];
-            for (i in keywords) {
-                console.log(keywords[i]);
-                connection.query('select image_id from imagetaguser where tag_id like (' +
-                ' select tag_id from tag where tag_name like "' + keywords[i] + '");', function (err, rows, fields) {
-                    for (i in rows) {
-                        //connection.query('select image_name from image where image_id like "' + rows[i].image_id + '";', function (err, rows, fields) {
-                        ids.push(rows[i].image_id);
-                    }
-                });
-                console.log('inloop '+ids);
-            }
-            console.log(ids);
-            //getNamesFromDB(ids, [], callback);
+            //to derive all image_ids from each tag, we use a recursive function with callback
+            getIDbyTagsFromDB(keywords, [], function (ids) {
+                console.log('derived ids: ' + ids);
+                //for each image_id get the image_name recursively
+                getNamesFromDB(ids, [], callback)
+            });
         }
-        //here we have a typical asynchronous function. callback hell!
-        //function addPic(callback) {
-        //    client.sunion(keywords, function (err, result) {
-        //        filenames = result;
-        //        console.log("To Client: " + filenames);
-        //        callback();
-        //    });
-        //}
 
-        ////send filenames, must be in a function because of callback
+        //send filenames, must be in a function because of callback
         function sendresult(err, filenames) {
-            res.json(filenames);
+            res.json(removeDuplicates(filenames));
         }
 
         addPic(sendresult);
@@ -103,22 +86,24 @@ exports.bytag = function (req, res) {
 exports.byuser = function (req, res) {
     if (req.xhr) {
         console.log('this is ajax');
-        var filenames = {};
         handleDisconnect();
         function addPic(callback) {
+            //async query
             connection.query('select image_id from imagetaguser where user_id like (' +
-                ' select user_id from user where token like "' + req.param('user') + '");', function (err, rows, fields) {
+                ' select user_id from user where token like ?);',[req.param('user')], function (err, rows, fields) {
                     var ids = [];
+                    //save all ids from user to array ids
                     for (i in rows) {
                         ids.push(rows[i].image_id);
                     }
                     console.log(ids);
+                    //for each image_id get the image_name recursively
                     getNamesFromDB(ids, [], callback);
                 });
         }
 
         function sendresult(err, filenames) {
-            res.json(filenames);
+            res.json(removeDuplicates(filenames));
         }
 
         addPic(sendresult);
@@ -130,19 +115,6 @@ exports.byuser = function (req, res) {
         res.redirect('/auth/google');
     }
 };
-
-function getNamesFromDB(ids, sofar, cb) {
-    var id = ids.shift();
-    if (!id)
-        cb(null, sofar);
-    else {
-        connection.query('select image_name from image where image_id like "' + id + '";', function (err, rows, fields) {
-            sofar.push(rows[0].image_name);
-            getNamesFromDB(ids, sofar, cb);
-        });
-    }
-}
-
 
 // upload new files to tag directory
 exports.upload = function (req, res) {
@@ -283,6 +255,42 @@ exports.gallery = function (req, res) {
     }
     showall(sendresult);
 };
+
+function getIDbyTagsFromDB(ids, sofar, cb) {
+    var keyword = ids.shift();
+    if (!keyword) {
+        console.log("sofar return: " + sofar);
+        cb(sofar);
+    }
+    else {
+        connection.query('select image_id from imagetaguser where tag_id like (' +
+                ' select tag_id from tag where tag_name like ?);', [keyword], function (err, rows, fields) {
+                    for (i in rows) {
+                        //connection.query('select image_name from image where image_id like "' + rows[i].image_id + '";', function (err, rows, fields) {
+                        sofar.push(rows[i].image_id);
+                    }
+                    getIDbyTagsFromDB(ids, sofar, cb);
+                });
+    }
+}
+
+function getNamesFromDB(ids, sofar, cb) {
+    var id = ids.shift();
+    if (!id)
+        cb(null, sofar);
+    else {
+        connection.query('select image_name from image where image_id like ?;', [id], function (err, rows, fields) {
+            sofar.push(rows[0].image_name);
+            getNamesFromDB(ids, sofar, cb);
+        });
+    }
+}
+
+function removeDuplicates(myArray) {
+    return myArray.filter(function (elem, pos) {
+        return myArray.indexOf(elem) == pos;
+    });
+}
 
 
 //needed to establish the connection
