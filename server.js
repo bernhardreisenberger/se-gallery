@@ -69,15 +69,22 @@ app.get('/u', function (req, res) {
     res.redirect('/auth/google');
 });
 app.get('/u/:user', routes.byuser);
+app.get('/t/:tag', routes.bytag);
 app.get('/gallery', routes.gallery);
 //:filter can be accessed with the req.param()
-app.get('/t/:tag', routes.bytag);
+
 
 //api routes
-//app.post('/api/upload', api.upload);
-//app.get('/api/u/:user', api.byuser);
-//app.get('/api/gallery', api.gallery);
-//app.get('/api/t/:tag', api.bytag)
+app.post('/api/upload', api.upload);
+app.get('/api/u/:user', api.byuser);
+app.get('/api/t/:tag', api.bytag);
+app.get('/api/gallery', api.gallery);
+app.get('/api/login', function (req, res) {
+    res.redirect('/auth/login');
+});
+app.get('/api/logout', function (req, res) {
+    res.redirect('/auth/logout');
+});
 
 //authentification routes
 app.get('/auth/google', passport.authenticate('google'));

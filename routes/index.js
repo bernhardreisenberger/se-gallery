@@ -64,7 +64,7 @@ exports.bytag = function (req, res) {
         handleDisconnect();
         function addPic(callback) {
             //to derive all image_ids from each tag, we use a recursive function with callback
-            getIDbyTagsFromDB(keywords, [], function (ids) {
+            getIDByTagFromDB(keywords, [], function (ids) {
                 console.log('derived ids: ' + ids);
                 //for each image_id get the image_name recursively
                 getNamesFromDB(ids, [], callback)
@@ -90,7 +90,7 @@ exports.byuser = function (req, res) {
         function addPic(callback) {
             //async query
             connection.query('select image_id from imagetaguser where user_id like (' +
-                ' select user_id from user where token like ?);',[req.param('user')], function (err, rows, fields) {
+                ' select user_id from user where token like ?);', [req.param('user')], function (err, rows, fields) {
                     var ids = [];
                     //save all ids from user to array ids
                     for (i in rows) {
@@ -114,6 +114,39 @@ exports.byuser = function (req, res) {
     else {
         res.redirect('/auth/google');
     }
+};
+
+// show all thumbnails in the gallery
+exports.gallery = function (req, res) {
+    //console.log("USER: " + req.user.identifier);
+    console.log("isauthenticated: " + req.isAuthenticated());
+    var filenames = {};
+    //to database
+    handleDisconnect();
+    function showall(callback) {
+        //query tag_names for filters
+        connection.query('select tag_name from tag;', function (err, rows, fields) {
+            console.log(rows);
+            //save all names from tag to array names
+            var tag_names = [];
+            for (i in rows) {
+                //fill array for recursive function
+                tag_names.push(rows[i].tag_name);
+                //set tag_names as properties of Object filenames
+                filenames[rows[i].tag_name] = true;
+            }
+            //fill object filenames with image_names
+            getNamesByTagFromDB(tag_names, filenames, callback);
+        });
+    }
+
+    //send filenames, must be in a function because of callback
+    function sendresult() {
+        console.log("data: " + JSON.stringify(filenames));
+        //render with completegallery.jade and provide locals title and data
+        res.render('completegallery', { title: 'Gallery', data: JSON.stringify(filenames) });
+    }
+    showall(sendresult);
 };
 
 // upload new files to tag directory
@@ -218,70 +251,54 @@ exports.upload = function (req, res) {
     }
 };
 
-
-
-// show all thumbnails in the gallery
-exports.gallery = function (req, res) {
-    //console.log("USER: " + req.user.identifier);
-    console.log("isauthenticated: " + req.isAuthenticated());
-    var filenames = {};
-    //to database
-    handleDisconnect();
-    function showall(callback) {
-        connection.query('select tag_id from tag;', function (err, rows, fields) {
-            console.log(rows);
-
-            callback();
-        });
-        //client.smembers('tags', function (err, tags) {
-        //    tags.forEach(function (tag) {
-        //        client.sunion(tag, function (err, result) {
-        //            filenames[tag] = result;
-        //            console.log("To Client with all: " + tag + ": " + filenames[tag]);
-        //            //check if all tags are in object filenames
-        //            if (Object.keys(filenames).length == tags.length) {
-        //                callback();
-        //            }
-        //        });
-        //    });
-        //});
-    }
-
-    //send filenames, must be in a function because of callback
-    function sendresult() {
-        console.log("data: " + JSON.stringify(filenames));
-        //render with completegallery.jade and provide locals title and data
-        res.render('completegallery', { title: 'Gallery', data: JSON.stringify(filenames) });
-    }
-    showall(sendresult);
-};
-
-function getIDbyTagsFromDB(ids, sofar, cb) {
-    var keyword = ids.shift();
+//used to get all tags and filenames into one object
+function getNamesByTagFromDB(keywords, filenames, cb) {
+    var keyword = keywords.shift();
     if (!keyword) {
-        console.log("sofar return: " + sofar);
-        cb(sofar);
+        cb(filenames);
+    }
+    else {
+        connection.query('select image_id from imagetaguser where tag_id like (' +
+                ' select tag_id from tag where tag_name like ?);', [keyword], function (err, rows, fields) {
+                    var image_ids = [];
+                    for (i in rows) {
+                        image_ids.push(rows[i].image_id);
+                    }
+                    getNamesFromDB(image_ids, [], function (err, result) {
+                        filenames[keyword] = result;
+                        console.log("inner res: " + filenames[keyword]);
+                        getNamesByTagFromDB(keywords, filenames, cb);
+                    });
+                });
+    }
+}
+
+function getIDByTagFromDB(keywords, image_ids, cb) {
+    var keyword = keywords.shift();
+    if (!keyword) {
+        console.log("sofar return: " + image_ids);
+        cb(image_ids);
     }
     else {
         connection.query('select image_id from imagetaguser where tag_id like (' +
                 ' select tag_id from tag where tag_name like ?);', [keyword], function (err, rows, fields) {
                     for (i in rows) {
                         //connection.query('select image_name from image where image_id like "' + rows[i].image_id + '";', function (err, rows, fields) {
-                        sofar.push(rows[i].image_id);
+                        image_ids.push(rows[i].image_id);
                     }
-                    getIDbyTagsFromDB(ids, sofar, cb);
+                    getIDByTagFromDB(keywords, image_ids, cb);
                 });
     }
 }
 
-function getNamesFromDB(ids, sofar, cb) {
+function getNamesFromDB(ids, image_names, cb) {
     var id = ids.shift();
     if (!id)
-        cb(null, sofar);
+        cb(null, image_names);
     else {
         connection.query('select image_name from image where image_id like ?;', [id], function (err, rows, fields) {
-            sofar.push(rows[0].image_name);
-            getNamesFromDB(ids, sofar, cb);
+            image_names.push(rows[0].image_name);
+            getNamesFromDB(ids, image_names, cb);
         });
     }
 }

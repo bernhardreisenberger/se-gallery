@@ -1,6 +1,9 @@
 $(document).ready(function () {
-    var url = window.location.pathname;
-    var filter = url.substring(url.lastIndexOf('/') + 1);
+    var baseURL = location.hostname + ':' + location.port;
+    var relativeURL = window.location.pathname;
+    console.log('url: ' + baseURL);
+    var filter = relativeURL.substring(relativeURL.lastIndexOf('/') + 1);
+    console.log('filter: ' + filter);
 
     $('form input').keyup(function (e) {
         if (e.keyCode == 13) {
@@ -10,7 +13,7 @@ $(document).ready(function () {
     //enter a filter and trigger ajax request
     $('#tag-search').keyup(function (e) {
         if (e.keyCode == 13) {
-            window.location.replace(this.value);
+            window.location.replace('/t/'+this.value);
         }
     });
     //trigger ajax request only if there is a filter in the url
@@ -98,11 +101,11 @@ function getSetOfFilenames(tags) {
 
 function addimageelement(i, val) {
     var img = $('<img onerror="this.src=\'images/404.gif\'" class="dynamic">');
-    img.attr('src', "thumbnails/" + val);
+    img.attr('src', "/thumbnails/" + val);
     img.appendTo('#images');
     //function for shadowbox
     img.click(function () {
-        lightbox("uploads/" + val);
+        lightbox("/uploads/" + val);
     });
 }
 
@@ -139,14 +142,6 @@ function lightbox(picUrl) {
     // display the lightbox
     $('#lightbox').show();
     $('#lightbox-shadow').show();
-}
-
-//helper function for checking existing image
-function ImageExist(url) 
-{
-   var img = new Image();
-   img.src = url;
-   return img.height != 0;
 }
 
 // close the lightbox
