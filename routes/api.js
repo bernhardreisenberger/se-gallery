@@ -1,15 +1,28 @@
 var fs = require('fs');
 var url = require('url');
 var easyimg = require('easyimage');
-var dbconfig = {
-    host: 'localhost',
-    database: 'se-gallery',
-    user: 'se-galleryUkd2o',
-    password: '}z{tjB)]t;x2'
-};
+if (process.env.VCAP_SERVICES) {
+    var env = JSON.parse(process.env.VCAP_SERVICES);
+    var cre = env['mysql-5.1'][0]['credentials'];
+    var dbconfig = {
+        host: cre.host,
+        port: cre.port,
+        database: cre.name,
+        user: cre.user,
+        password: cre.password
+    };
+} else {
+    var dbconfig = {
+        host: 'localhost',
+        database: 'se-gallery',
+        user: 'se-galleryUkd2o',
+        password: '}z{tjB)]t;x2'
+    };
+}
 var mysql = require('mysql');
 
 exports.createdb = function (req, res) {
+    console.log(dbconfig);
     handleDisconnect();
     connection.query('create table if not exists image (' +
         'image_id int not null auto_increment primary key,' +
@@ -85,9 +98,6 @@ exports.byuser = function (req, res) {
     }
 
     addPic(sendresult);
-    if (!req.isAuthenticated()) {
-        res.redirect('/auth/google');
-    }
 };
 
 // show all thumbnails in the gallery
@@ -190,26 +200,22 @@ exports.upload = function (req, res) {
             if (file.type.indexOf("image/") === 0) {
                 var target_file = imagePath + "/" + file.name;
                 var thumb_file = thumbPath + "/" + file.name;
-                //move file to uploads folder
-                fs.rename(file.path, target_file, function (err) {
-                    if (err) throw err;
-                    // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
-                    fs.unlink(file.path, function () {
-                        if (err) throw err;
-                    });
-                    //easyimg produces error 'file not supported' if imagemagick does not exist
-                    //better error handling
-                    easyimg.info(target_file, function (err, stdout, stderr) {
-                        if (err) throw err + ' Imagemagick probably not installed correctly';
-                        easyimg.thumbnail(
+                //read an write file
+                fs.readFile(file.path, function (err, data) {
+                    fs.writeFile(target_file, data, function (err) {
+                        if(err) console.log('err: ' + err);
+                        easyimg.info(target_file, function (err, stdout, stderr) {
+                            if (err) console.log(err + ' Imagemagick probably not installed correctly');
+                            easyimg.thumbnail(
                         {
                             src: target_file, dst: thumb_file,
                             width: 200, height: 200,
                             x: 0, y: 0
                         }, function (err, image) {
-                            if (err) throw err;
+                            if (err) console.log(err);
                             console.log('Thumbnail created');
                             console.log(image);
+                        });
                         });
                     });
                 });
@@ -243,7 +249,6 @@ function getNamesByTagFromDB(keywords, filenames, cb) {
 function getIDByTagFromDB(keywords, image_ids, cb) {
     var keyword = keywords.shift();
     if (!keyword) {
-        console.log("sofar return: " + image_ids);
         cb(image_ids);
     }
     else {

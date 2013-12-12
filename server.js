@@ -44,19 +44,15 @@ passport.deserializeUser(function (obj, done) {
 });
 
 passport.use(new GoogleStrategy({
-    returnURL: 'http://localhost:3000/auth/google/return',
-    realm: 'http://localhost:3000/'
+    returnURL: 'http://localhost/auth/google/return',
+    realm: 'http://localhost/'
 },
   function (identifier, profile, done) {
-      console.log('ident: ' + identifier);
       //substring important part of the identifier
       //get saved in req.user and can be accessed by req.user.identifier
       return done(null, { id: identifier.substring(identifier.indexOf('=') + 1) });
   }
 ));
-
-
-
 
 app.get('/test/db', api.createdb);
 
@@ -80,7 +76,7 @@ app.get('/api/u/:user', api.byuser);
 app.get('/api/t/:tag', api.bytag);
 app.get('/api/gallery', api.gallery);
 app.get('/api/login', function (req, res) {
-    res.redirect('/auth/login');
+    res.redirect('/auth/google');
 });
 app.get('/api/logout', function (req, res) {
     res.redirect('/auth/logout');
