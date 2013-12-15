@@ -44,8 +44,8 @@ passport.deserializeUser(function (obj, done) {
 });
 
 passport.use(new GoogleStrategy({
-    returnURL: 'http://localhost:3000/auth/google/return',
-    realm: 'http://localhost:3000/'
+    returnURL: 'http://se-gallery.aws.af.cm/auth/google/return',
+    realm: 'http://se-gallery.aws.af.cm/'
 },
   function (identifier, profile, done) {
       //substring important part of the identifier

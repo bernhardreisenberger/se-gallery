@@ -22,11 +22,8 @@ exports.byuser = function (req, res) {
     if (req.xhr) {
         api.byuser(req, res);
     }
-    else if (req.isAuthenticated()) {
-        res.render('mygallery', { title: 'My Gallery' });
-    }
     else {
-        res.redirect('/auth/google');
+        res.render('mygallery', { title: 'My Gallery' });
     }
 };
 
