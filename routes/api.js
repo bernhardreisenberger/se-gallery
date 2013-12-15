@@ -146,11 +146,14 @@ exports.upload = function (req, res) {
         }
         //if only one tag will be submitted, we get a string...we do need an array
         if (typeof req.body.tags === 'string') {
+            if (req.body.tags == "") {
+                req.body.tags = "Sonstige";
+            }
             req.body.tags = [req.body.tags];
         }
 
         //android: save token from post to req.user
-        if(req.body.user) {
+        if (req.body.user) {
             req.user = {};
             req.user.id = req.body.user;
         }

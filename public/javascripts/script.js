@@ -42,43 +42,41 @@ $(document).ready(function () {
 });
 
 function fillGallery() {
-    var data = tagswithdata;
-    //console.log(data);
+    var data = tagswithdata['categories'];
     var keys = [];
     for (var key in data) {
-        keys.push(key);
+        keys.push(data[key].tag);
     }
-    keys.sort();
+    console.log(keys);
     //for each key of the object (each tag)
     for (key in keys) {
         //console.log(key + ": " + data[key]);
         var tag = $('<h2>' + keys[key] + '</h2>');
         tag.appendTo('#images');
-
         //only add tags to the filter, if #filter-zone not filled completely
-        if ($('#filter-zone p').length < Object.keys(data).length) {
+        if ($('#filter-zone p').length < data.length) {
             $('#filter-zone').append($('<p class="filter">' + keys[key] + '</p>'));
         }
         //add html for each image
-        $.each(data[keys[key]], function (i, val) { addimageelement(i, val) });
+        $.each(data[key].pics, function (i, val) { addimageelement(i, val) });
     }
 }
 
-var tags = {};
+var tags = [];
 function filterByTag(tag) {
     //highlight filter
     $(tag.target).toggleClass('filter-selected');
     //if filter activated
     if ($(tag.target).hasClass('filter-selected')) {
         //make a set of all tags
-        tags[tag.target.innerHTML] = true;
+        tags.push(tag.target.innerHTML)
         //get filenames and display them
         getSetOfFilenames(tags);
     }
     //if filter deactivated
     else {
         //delete tag from set tags
-        delete tags[tag.target.innerHTML];
+        delete tags.pop(tag.target.innerHTML);
         //get filenames and display them
         getSetOfFilenames(tags);
         if (!$('#filter-zone p').hasClass('filter-selected')) {
@@ -89,21 +87,25 @@ function filterByTag(tag) {
 }
 
 function getSetOfFilenames(tags) {
+    var data = tagswithdata['categories'];
     var filenames = {};
     $('#images').empty();
-    for (key in tags) {
-        $.each(tagswithdata[key], function (i, val) {
-            filenames[val] = true;
-        });
+
+    for (tag in tags) {
+        //search for tag in object data
+        for (key in data) {
+            if (data[key].tag == tags[tag]) {
+                $.each(data[key].pics, function (i, val) {
+                    filenames[val] = true;
+                });
+            }
+        }
     }
-    //return filenames;
     $.each(filenames, function (i, val) { addimageelement(val, i) });
 }
 
-
-
 function addimageelement(i, val) {
-    var img = $('<img onerror="this.src=\'images/404.gif\'" class="dynamic">');
+    var img = $('<img onerror="this.src=\'/images/404.gif\'" class="dynamic">');
     img.attr('src', "/thumbnails/" + val);
     img.appendTo('#images');
     //function for shadowbox
@@ -137,7 +139,7 @@ function lightbox(picUrl) {
     $('#lightbox').empty();
 
     // insert pic
-    $('#lightbox').append($("<img onerror='this.src=\"images/404.gif\"' id='theImg' src='" + picUrl + "'/>"));
+    $('#lightbox').append($("<img onerror='this.src=\"/images/404.gif\"' id='theImg' src='" + picUrl + "'/>"));
 
     // move the lightbox to the current window top + 100px
     $('#lightbox').css('top', $(window).scrollTop() + 100 + 'px');
