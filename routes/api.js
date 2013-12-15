@@ -103,6 +103,7 @@ exports.byuser = function (req, res) {
 // show all thumbnails in the gallery
 exports.gallery = function (req, res) {
     var filenames = {};
+    filenames['categories'] = [];
     //to database
     handleDisconnect();
     function showall(callback) {
@@ -111,19 +112,22 @@ exports.gallery = function (req, res) {
             console.log(rows);
             //save all names from tag to array names
             var tag_names = [];
+            //var tag ={};           
             for (i in rows) {
                 //fill array for recursive function
                 tag_names.push(rows[i].tag_name);
                 //set tag_names as properties of Object filenames
-                filenames[rows[i].tag_name] = true;
+
             }
             //fill object filenames with image_names
             getNamesByTagFromDB(tag_names, filenames, callback);
+
         });
     }
 
     //send filenames, must be in a function because of callback
     function sendresult() {
+
         console.log("data: " + JSON.stringify(filenames));
         res.json(filenames);
     }
@@ -203,7 +207,7 @@ exports.upload = function (req, res) {
                 //read an write file
                 fs.readFile(file.path, function (err, data) {
                     fs.writeFile(target_file, data, function (err) {
-                        if(err) console.log('err: ' + err);
+                        if (err) console.log('err: ' + err);
                         easyimg.info(target_file, function (err, stdout, stderr) {
                             if (err) console.log(err + ' Imagemagick probably not installed correctly');
                             easyimg.thumbnail(
@@ -231,6 +235,8 @@ function getNamesByTagFromDB(keywords, filenames, cb) {
         cb(filenames);
     }
     else {
+        var tag = { tag: keyword };
+
         connection.query('select image_id from imagetaguser where tag_id like (' +
                 ' select tag_id from tag where tag_name like ?);', [keyword], function (err, rows, fields) {
                     var image_ids = [];
@@ -238,11 +244,14 @@ function getNamesByTagFromDB(keywords, filenames, cb) {
                         image_ids.push(rows[i].image_id);
                     }
                     getNamesFromDB(image_ids, [], function (err, result) {
-                        filenames[keyword] = result;
-                        console.log("inner res: " + filenames[keyword]);
+                        tag['pics'] = result;
+                        filenames['categories'].push(tag);
+                        //filenames[keyword] = result;
+                        console.log("inner res: " + filenames['pics']);
                         getNamesByTagFromDB(keywords, filenames, cb);
                     });
                 });
+        
     }
 }
 
