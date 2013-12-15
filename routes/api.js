@@ -149,6 +149,12 @@ exports.upload = function (req, res) {
             req.body.tags = [req.body.tags];
         }
 
+        //android: save token from post to req.user
+        if(req.body.user) {
+            req.user = {};
+            req.user.id = req.body.user;
+        }
+
         //if not logged in, userid will be set to guest
         if (req.user == undefined) {
             req.user = {};
